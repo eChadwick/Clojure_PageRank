@@ -9,12 +9,12 @@
 ;   )
 ; )
 
-(defn PrintInput []
+(defn ReadData [filePath]
 	(def outMap {})
 	(doseq [x (range 0 1000)]
 		(def outMap (assoc outMap x []))
 	)
-	(with-open [rdr (reader "pages.txt")]
+	(with-open [rdr (reader filePath)]
 	  (doseq [line (line-seq rdr)]
 	  	(doseq [key (rest (str/split line #" "))]
 	  		(def outMap (assoc outMap key (conj (get outMap key) (first (str/split line #" ")))))
@@ -25,4 +25,4 @@
 )
 
 ; (PrintInput)
-(print(get (PrintInput) "6666"))
+(print(get (ReadData "pages.txt") "6666"))
