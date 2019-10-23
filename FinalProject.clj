@@ -11,17 +11,18 @@
 
 (defn PrintInput []
 	(def outMap {})
+	(doseq [x (range 0 1000)]
+		(def outMap (assoc outMap x []))
+	)
 	(with-open [rdr (reader "pages.txt")]
 	  (doseq [line (line-seq rdr)]
-	  	; (print (type {(first (str/split line #" ")) (rest (str/split line #" "))}))
-	  	(def outMap (merge outMap {(first (str/split line #" ")) (rest (str/split line #" "))}))
-	  	; (print (type(first (str/split line #" "))) "\n")
-	  	; (print(type (assoc outMap (first (str/split line #" ")) (rest (str/split line #" ")))))
-	  	; (let outMap (merge outMap (first (str/split line #" ")) (rest (str/split line #" "))))
-	  	; (print(assoc outMap (first (str/split line #" ")) (rest (str/split line #" "))))
+	  	(doseq [key (rest (str/split line #" "))]
+	  		(def outMap (assoc outMap key (conj (get outMap key) (first (str/split line #" ")))))
+	  	)
 		)
   )
   outMap
 )
-; (print(PrintInput))
-(print(PrintInput))
+
+; (PrintInput)
+(print(get (PrintInput) "6666"))
