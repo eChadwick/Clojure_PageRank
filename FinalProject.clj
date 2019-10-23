@@ -11,7 +11,7 @@
 
 (defn ReadData [filePath]
 	(def outMap {})
-	(doseq [x (range 0 1000)]
+	(doseq [x (range 0 10000)]
 		(def outMap (assoc outMap x []))
 	)
 	(with-open [rdr (reader filePath)]
@@ -24,5 +24,18 @@
   outMap
 )
 
-; (PrintInput)
-(print(get (ReadData "pages.txt") "6666"))
+(defn InitialRanks []
+	(def outMap {})
+	(doseq [x (range 0 10000)]
+		(def outMap (assoc outMap x 1))
+	)
+	outMap
+)
+
+
+
+(def linksMap (ReadData "pages.txt"))
+(def ranksMap InitialRanks)
+
+(print (ranksMap))
+; (print(get linksMap "9999"))
