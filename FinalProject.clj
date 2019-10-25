@@ -1,15 +1,7 @@
 (use 'clojure.java.io)
 (require '[clojure.string :as str])
 
-; (defn PrintInput []
-; 	(with-open [rdr (reader "pages.txt")]
-; 	  (doseq [line (line-seq rdr)]
-; 	    (print(str/split line #" "))
-; 			)
-;   )
-; )
-
-(defn ReadData [filePath]
+(defn GenInLinksMap [filePath]
 	(def outMap {})
 	(doseq [x (range 0 10000)]
 		(def outMap (assoc outMap x []))
@@ -23,19 +15,40 @@
   )
   outMap
 )
+(def inLinksMap (GenInLinksMap "pages.txt"))
+
+(defn GenOutCountMap [filePath]
+	(def outMap {})
+	(with-open [rdr (reader filePath)]
+		(doseq [line (line-seq rdr)]
+			(def outMap (assoc outMap (first (str/split line #" ")) (dec (count (str/split line #" ")))))
+		)
+	)
+	outMap
+)
+(def outLinksCount (GenOutCountMap "pages.txt"))
 
 (defn InitialRanks []
 	(def outMap {})
 	(doseq [x (range 0 10000)]
-		(def outMap (assoc outMap x 1))
+		(def outMap (assoc outMap (str x) (vector x 1)))
 	)
 	outMap
 )
-
-
-
-(def linksMap (ReadData "pages.txt"))
 (def ranksMap InitialRanks)
 
-(print (ranksMap))
-; (print(get linksMap "9999"))
+
+(defn UpdateRank [rankVector]
+	; (print (get inLinksMap (str (get rankVector 0))))
+	(def runningTotal 0)
+	(doseq [x (get inLinksMap (str (get rankVector 0)))]
+		(def numOutLinks (get outLinksCount x))
+
+		; (print (get ranksMap "0"))
+		(def xRank (get (ranksMap) x))
+		(print xRank (str "\n"))
+	)
+)
+
+(UpdateRank [4444 1])
+; (print (type (first (keys (ranksMap)))))
