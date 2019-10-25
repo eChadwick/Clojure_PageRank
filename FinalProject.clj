@@ -54,6 +54,9 @@
 	(vector (get rankVector 0) (* (double 85/100) runningTotal))
 )
 
+(print (map UpdateRank (ranksMap)))
+; (print (str "Done updating\n"))
+; (print (doneTest))
 ; (print (get (UpdateRank [4444 1]) 0))
 ; (print (type (UpdateRank [4444 1])))
 ; (print (type (first (keys (ranksMap)))))
