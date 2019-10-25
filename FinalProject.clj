@@ -43,12 +43,17 @@
 	(def runningTotal 0)
 	(doseq [x (get inLinksMap (str (get rankVector 0)))]
 		(def numOutLinks (get outLinksCount x))
+		(def xRank (get (get (ranksMap) x) 1))
 
-		; (print (get ranksMap "0"))
-		(def xRank (get (ranksMap) x))
-		(print xRank (str "\n"))
+		; (print xRank)
+		; (print (type (+ runningTotal (/ xRank numOutLinks))))
+		; (print (double(/ xRank numOutLinks)) (str "\n"))
+		(def runningTotal (* (double 85/100) (double(/ xRank numOutLinks))))
+		; (print runningTotal (str "\n"))
 	)
+	(vector (get rankVector 0) (* (double 85/100) runningTotal))
 )
 
-(UpdateRank [4444 1])
+; (print (get (UpdateRank [4444 1]) 0))
+; (print (type (UpdateRank [4444 1])))
 ; (print (type (first (keys (ranksMap)))))
