@@ -11,7 +11,7 @@
 	  	(doseq [key (rest (str/split line #" "))]
 	  		(def outMap (assoc outMap key (conj (get outMap key) (first (str/split line #" ")))))
 	  	)
-		)
+			)
   )
   outMap
 )
@@ -35,28 +35,47 @@
 	)
 	outMap
 )
-(def ranksMap InitialRanks)
-
+(def ranksMap (InitialRanks))
 
 (defn UpdateRank [rankVector]
-	; (print (get inLinksMap (str (get rankVector 0))))
 	(def runningTotal 0)
 	(doseq [x (get inLinksMap (str (get rankVector 0)))]
 		(def numOutLinks (get outLinksCount x))
-		(def xRank (get (get (ranksMap) x) 1))
-
-		; (print xRank)
-		; (print (type (+ runningTotal (/ xRank numOutLinks))))
-		; (print (double(/ xRank numOutLinks)) (str "\n"))
+		(def xRank (get (get ranksMap x) 1))
 		(def runningTotal (* (double 85/100) (double(/ xRank numOutLinks))))
-		; (print runningTotal (str "\n"))
 	)
 	(vector (get rankVector 0) (* (double 85/100) runningTotal))
 )
 
-(print (map UpdateRank (ranksMap)))
-; (print (str "Done updating\n"))
-; (print (doneTest))
-; (print (get (UpdateRank [4444 1]) 0))
-; (print (type (UpdateRank [4444 1])))
-; (print (type (first (keys (ranksMap)))))
+; This function came from Clojure source. I modified it allows explicitly setting the 
+; number of threads used
+(def numThreads 2)
+(defn myPmap
+  "Like pmap, except better"
+  {:added "1.0"
+   :static true}
+  ([f coll]
+   (let [n numThreads
+         rets (map #(future (f %)) coll)
+         step (fn step [[x & xs :as vs] fs]
+                (lazy-seq
+                 (if-let [s (seq fs)]
+                   (cons (deref x) (step xs (rest s)))
+                   (map deref vs))))]
+     (step rets (drop n rets))))
+  ([f coll & colls]
+   (let [step (fn step [cs]
+                (lazy-seq
+                 (let [ss (map seq cs)]
+                   (when (every? identity ss)
+                     (cons (map first ss) (step (map rest ss)))))))]
+     (pmap #(apply f %) (step (cons coll colls))))))
+
+
+(time 
+	(dotimes [x 5]
+		(doall
+			(myPmap UpdateRank ranksMap)
+		)
+	)
+)
