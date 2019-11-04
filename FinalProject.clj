@@ -15,7 +15,7 @@
   )
   outMap
 )
-(def inLinksMap (GenInLinksMap "pages.txt"))
+(def inLinksMap (doall (GenInLinksMap "pages.txt")))
 
 (defn GenOutCountMap [filePath]
 	(def outMap {})
@@ -26,7 +26,7 @@
 	)
 	outMap
 )
-(def outLinksCount (GenOutCountMap "pages.txt"))
+(def outLinksCount (doall (GenOutCountMap "pages.txt")))
 
 (defn InitialRanks []
 	(def outMap {})
@@ -35,7 +35,7 @@
 	)
 	outMap
 )
-(def ranksMap (InitialRanks))
+(def ranksMap (doall (InitialRanks)))
 
 (defn UpdateRank [rankVector]
 	(def runningTotal 0)
@@ -48,8 +48,8 @@
 )
 
 ; This function came from Clojure source. I modified it allows explicitly setting the 
-; number of threads used
-(def numThreads 2)
+; number of threads used. Set below variable to desired number.
+(def numThreads 2560)
 (defn myPmap
   "Like pmap, except better"
   {:added "1.0"
@@ -71,9 +71,8 @@
                      (cons (map first ss) (step (map rest ss)))))))]
      (pmap #(apply f %) (step (cons coll colls))))))
 
-
 (time 
-	(dotimes [x 5]
+	(dotimes [x 1000]
 		(doall
 			(myPmap UpdateRank ranksMap)
 		)
